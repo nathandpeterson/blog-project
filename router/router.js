@@ -4,5 +4,6 @@ const ctrl = require('../controller/control.js')
 
 router.get('/', ctrl.getAll)
 router.get('/:id', ctrl.getOne)
+router.post('/', ctrl.create)
 
 module.exports = router

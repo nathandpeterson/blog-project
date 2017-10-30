@@ -12,5 +12,11 @@ function getOne(req, res, next) {
   res.status(200).send(data)
 }
 
+function create(req, res, next){
+  let response = models.create(req.body)
+  //error handling here
+  res.status(201).send(response)
+}
 
-module.exports = {getOne, getAll}
+
+module.exports = {getOne, getAll, create}

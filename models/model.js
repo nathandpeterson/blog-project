@@ -1,5 +1,6 @@
 const fs = require('fs')
 const dbPath = './data.json'
+const uuid = require('uuid')
 
 const db = fs.readFileSync(dbPath, 'utf-8')
 let dbJSON = JSON.parse(db)
@@ -21,4 +22,24 @@ function getOne(id){
   return reqPost
 }
 
-module.exports = {getAll, getOne}
+function create(body){
+  const data = schema(body)
+  if(data.errors) return data.errors
+  const db = fs.readFileSync(dbPath, 'utf-8')
+  let dbJSON = JSON.parse(db)
+  dbJSON[0].posts.push(data)
+  let dbString = JSON.stringify(dbJSON)
+  fs.writeFileSync(dbPath, dbString)
+  return data
+}
+
+function schema(body){
+  const post = {id : uuid()}
+  if(body.title) post.title = body.title
+  if(body.content) post.content = body.content
+  if(body.image_url) post.image_url = body.image_url
+  post.created = Date.now()
+  return post
+}
+
+module.exports = {getAll, getOne, create}

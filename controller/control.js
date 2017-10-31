@@ -18,5 +18,11 @@ function create(req, res, next){
   res.status(201).send(response)
 }
 
+function update(req, res, next){
+  let data = models.update(req.params.id, req.body)
+  //error handling here
+  res.status(201).send(data)
+}
 
-module.exports = {getOne, getAll, create}
+
+module.exports = {getOne, getAll, create, update}

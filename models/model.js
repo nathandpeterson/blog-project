@@ -29,17 +29,16 @@ function create(body){
 }
 
 function update(id, body){
-  body.edited = true
-  const data = schema(body)
   //error handling here
-  if(data.errors) return data.errors
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
   const reqPost = dbJSON[0].posts.find(post => post['id'] == id)
-  for(let i = 0; i < dbJSON[0].posts.length; i++){
-      console.log(dbJSON[0].posts[i].title)
-  }
-  return data
+  let revisedPost = updateHandler(reqPost, body)
+  let index = dbJSON[0].posts.findIndex(function(e){return e.id == id})
+  dbJSON[0].posts.splice(index, 1, revisedPost)
+  let dbString = JSON.stringify(dbJSON)
+  fs.writeFileSync(dbPath, dbString)
+  return reqPost
 }
 
 function destroy(id){
@@ -54,7 +53,6 @@ function destroy(id){
 }
 
 function schema(body){
-  const post = {id : uuid()}
   if(body.title) post.title = body.title
   if(body.content) {
     post.content = body.content
@@ -62,14 +60,19 @@ function schema(body){
     return post.error = {message: 'no content'}
   }
   if(body.image_url) post.image_url = body.image_url
-
-  if(body.edited) {
-    post.edited = timestamp('HH:mm:ss:MM/DD/YYYY')
-  } else {
-    post.created = timestamp('HH:mm:ss:MM/DD/YYYY')
-  }
+  post.created = timestamp('HH:mm:ss:MM/DD/YYYY')
   //error handling here!
   return post
+}
+
+function updateHandler(originalData, revisedData){
+  for(el in revisedData){
+    if(revisedData[el]) originalData[el] = revisedData[el]
+  }
+  revisedData.edited = timestamp('HH:mm:ss:MM/DD/YYYY')
+  revisedData.created = originalData.created
+  revisedData.id = originalData.id
+  return revisedData
 }
 
 module.exports = {getAll, getOne, create, update, destroy}

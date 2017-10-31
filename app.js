@@ -1,11 +1,9 @@
 const SERVER = 'http://localhost:3000/posts'
-const state = {}
 
 function getAll(){
   axios.get(SERVER)
     .then(res => {
-      state.current = res.data
-      return showAll(res.data)
+      showAll(res.data)
     })
     .catch(err => console.log(err))
 }
@@ -55,7 +53,7 @@ function buildButtons(data){
   `<div class='update-buttons'><button type="button" class="btn btn-primary btn-lg btn-block update-item" id="${data.id}">EDIT POST</button>
   <button type="button" class="btn btn-danger btn-lg btn-block delete-item" id="${data.id}">DELETE POST</button></div>`
   document.querySelector('.update-item').addEventListener('click', (e) => {
-    updatePage(e.target.id)
+    updateSetup(e.target.id)
   })
   document.querySelector('.delete-item').addEventListener('click', (e) => {
     confirmDelete(e.target.id)
@@ -67,7 +65,6 @@ function confirmDelete(id){
   buttons.innerHTML = `
   <h2>Are you sure you want to delete???</h2>
   <button type="button" class="btn btn-danger btn-lg btn-block confirm-delete" id="${id}">DELETE!!!</button>`
-
   document.querySelector('.confirm-delete').addEventListener('click', () => {
     reallyDelete(id)
   })
@@ -79,21 +76,39 @@ function reallyDelete(id){
     .catch(err => console.log(err))
 }
 
-function updatePage(id){
+function updateSetup(id){
   editor()
-  //Populate form with data...
-
+  axios.get(SERVER + '/' + id)
+    .then(res => buildUpdateForm(res))
+    .catch(err => console.log(err))
 }
 
-function updatePost(id){
-  axios.put(SERVER + '/' + id)
+function buildUpdateForm(data){
+  let title = document.querySelector('#title-input')
+  let content = document.querySelector('#content-input')
+  let url = document.querySelector('#url-input')
+  title.placeholder = data.data.title
+  content.value = data.data.content
+  url.value = data.data.image_url
+  document.querySelector('#create-post').addEventListener('click', () => {
+    let body = {title: title.value, content: content.value, image_url: url.value}
+    updatePost(data.data.id, body)
+  })
+}
+
+function updatePost(id, data){
+  axios.put(SERVER + '/' + id, data)
     .then(res => console.log(res))
     .catch(err => console.log(err))
 }
 
 function createPost(data){
   axios.post(SERVER, data)
-    .then(res => console.log('made it this far'))
+    .then(res => {
+      console.log(res)
+      console.log('made it this far')
+      // getAll()
+    })
     .catch(err => console.log(err))
 }
 
@@ -104,8 +119,8 @@ function editor(){
       <div class="input-group-lg">
         <label for="title-input">Title</label>
         <input class="form-control" type="text" id="title-input">
-        <label for="content-input">Post</label>
-        <input class="form-control"  id="content-input" type="text" id="content-input">
+        <label for="content-input">Content</label>
+        <textarea class="form-control"  id="content-input" type="text" id="content-input"></textarea>
         <label for="image-input">Image URL</label>
         <input class="form-control" type="url" id="url-input">
         </div>
@@ -121,19 +136,13 @@ document.querySelector('#home-button').addEventListener('click', () => {
 
 document.querySelector('#create-new').addEventListener('click', () => {
   editor()
-  let container = document.querySelector('.container')
-  container.innerHTML += `
-        <button type="button" class="btn btn-primary btn-lg btn-block" id="create-post">Submit</button>
-      </div>
-    </form>`
-    document.querySelector('#create-post').addEventListener('click', () => {
-      let title = document.querySelector('#title-input')
-      let content = document.querySelector('#content-input')
-      let url = document.querySelector('#url-input')
-      let data = {title: title.value, content: content.value, image_url: url.value}
-      createPost(data)
-      getAll()
-    })
+  document.querySelector('#create-post').addEventListener('click', () => {
+    let title = document.querySelector('#title-input')
+    let content = document.querySelector('#content-input')
+    let url = document.querySelector('#url-input')
+    let data = {title: title.value, content: content.value, image_url: url.value}
+    createPost(data)
+  })
 })
 
 getAll()

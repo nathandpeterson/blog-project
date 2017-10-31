@@ -66,7 +66,7 @@ function confirmDelete(id){
   let buttons  = document.querySelector('.update-buttons')
   buttons.innerHTML = `
   <h2>Are you sure you want to delete???</h2>
-  <button type="button" class="btn btn-primary btn-lg btn-block confirm-delete" id="${id}">DELETE!!!</button>`
+  <button type="button" class="btn btn-danger btn-lg btn-block confirm-delete" id="${id}">DELETE!!!</button>`
 
   document.querySelector('.confirm-delete').addEventListener('click', () => {
     reallyDelete(id)

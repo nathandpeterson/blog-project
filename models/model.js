@@ -3,15 +3,10 @@ const dbPath = './data.json'
 const uuid = require('uuid')
 const timestamp = require('time-stamp')
 
-const db = fs.readFileSync(dbPath, 'utf-8')
-let dbJSON = JSON.parse(db)
-dbJSON = dbJSON[0]
-
 function getAll(){
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
-  dbJSON = dbJSON[0]
-  return dbJSON.posts
+  return dbJSON[0].posts
 }
 
 function getOne(id){
@@ -41,14 +36,15 @@ function update(id, body){
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
   const reqPost = dbJSON[0].posts.find(post => post['id'] == id)
+  for(let i = 0; i < dbJSON[0].posts.length; i++){
+      console.log(dbJSON[0].posts[i].title)
+  }
   return data
 }
 
 function destroy(id){
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
-  console.log('@@@@@@@@@@@@@@@@@', id, 'inside the destroy route')
-  console.log(typeof dbJSON[0].posts)
   const filteredDB = dbJSON[0].posts.filter(post => post['id'] != id)
   //Error handling here
   const dbWrapper = [{"posts": filteredDB}]

@@ -53,7 +53,7 @@ function buildButtons(data){
   let container = document.querySelector('.container')
   container.innerHTML +=
   `<div class='update-buttons'><button type="button" class="btn btn-primary btn-lg btn-block update-item" id="${data.id}">EDIT POST</button>
-  <button type="button" class="btn btn-primary btn-lg btn-block delete-item" id="${data.id}">DELETE POST</button></div>`
+  <button type="button" class="btn btn-danger btn-lg btn-block delete-item" id="${data.id}">DELETE POST</button></div>`
   document.querySelector('.update-item').addEventListener('click', (e) => {
     updatePage(e.target.id)
   })

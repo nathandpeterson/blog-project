@@ -24,5 +24,11 @@ function update(req, res, next){
   res.status(201).send(data)
 }
 
+function destroy(req, res, next){
+    let data = models.destroy(req.params.id)
+    //error handling here
+    res.status(201).send(data)
+}
 
-module.exports = {getOne, getAll, create, update}
+
+module.exports = {getOne, getAll, create, update, destroy}

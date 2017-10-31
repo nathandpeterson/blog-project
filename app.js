@@ -43,7 +43,8 @@ function showOne(data){
     <img src="${data.image_url}">
   </div>
   <p>${data.content}</p>
-  <h5>${data.created}</h5>`
+  <h5>${data.created}</h5>
+  <div class="append-container"> </div>`
   data.edited ? container.innerHTML += `<h5>Edited: ${data.edited}</h5>` : null
   buildButtons(data)
 }
@@ -51,14 +52,43 @@ function showOne(data){
 function buildButtons(data){
   let container = document.querySelector('.container')
   container.innerHTML +=
-  `<button type="button" class="btn btn-primary btn-lg btn-block update-item" id="${data.id}">EDIT POST</button>
-  <button type="button" class="btn btn-primary btn-lg btn-block delete-item" id="${data.id}">DELETE POST</button>`
-  document.querySelector('.update-item').addEventListener('click', () => {
-    console.log('update!')
+  `<div class='update-buttons'><button type="button" class="btn btn-primary btn-lg btn-block update-item" id="${data.id}">EDIT POST</button>
+  <button type="button" class="btn btn-primary btn-lg btn-block delete-item" id="${data.id}">DELETE POST</button></div>`
+  document.querySelector('.update-item').addEventListener('click', (e) => {
+    updatePage(e.target.id)
   })
-  document.querySelector('.delete-item').addEventListener('click', () => {
-    console.log('delets!')
+  document.querySelector('.delete-item').addEventListener('click', (e) => {
+    confirmDelete(e.target.id)
   })
+}
+
+function confirmDelete(id){
+  let buttons  = document.querySelector('.update-buttons')
+  buttons.innerHTML = `
+  <h2>Are you sure you want to delete???</h2>
+  <button type="button" class="btn btn-primary btn-lg btn-block confirm-delete" id="${id}">DELETE!!!</button>`
+
+  document.querySelector('.confirm-delete').addEventListener('click', () => {
+    reallyDelete(id)
+  })
+}
+
+function reallyDelete(id){
+  axios.delete(SERVER + '/' + id)
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+}
+
+function updatePage(id){
+  editor()
+  //Populate form with data...
+
+}
+
+function updatePost(id){
+  axios.put(SERVER + '/' + id)
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
 }
 
 function createPost(data){
@@ -67,11 +97,7 @@ function createPost(data){
     .catch(err => console.log(err))
 }
 
-document.querySelector('#home-button').addEventListener('click', () => {
-  getAll()
-})
-
-document.querySelector('#create-new').addEventListener('click', () => {
+function editor(){
   let container = document.querySelector('.container')
   container.innerHTML = `
     <form>
@@ -84,6 +110,19 @@ document.querySelector('#create-new').addEventListener('click', () => {
         <input class="form-control" type="url" id="url-input">
         </div>
         <br>
+        <button type="button" class="btn btn-primary btn-lg btn-block" id="create-post">Submit</button>
+        </div>
+        </form>`
+}
+
+document.querySelector('#home-button').addEventListener('click', () => {
+  getAll()
+})
+
+document.querySelector('#create-new').addEventListener('click', () => {
+  editor()
+  let container = document.querySelector('.container')
+  container.innerHTML += `
         <button type="button" class="btn btn-primary btn-lg btn-block" id="create-post">Submit</button>
       </div>
     </form>`

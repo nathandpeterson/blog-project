@@ -36,25 +36,44 @@ function create(body){
 function update(id, body){
   body.edited = true
   const data = schema(body)
-  console.log('***** should show edited date',data)
+  //error handling here
   if(data.errors) return data.errors
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
+  const reqPost = dbJSON[0].posts.find(post => post['id'] == id)
   return data
+}
+
+function destroy(id){
+  const db = fs.readFileSync(dbPath, 'utf-8')
+  let dbJSON = JSON.parse(db)
+  console.log('@@@@@@@@@@@@@@@@@', id, 'inside the destroy route')
+  console.log(typeof dbJSON[0].posts)
+  const filteredDB = dbJSON[0].posts.filter(post => post['id'] != id)
+  //Error handling here
+  const dbWrapper = [{"posts": filteredDB}]
+  let dbString = JSON.stringify(dbWrapper)
+  fs.writeFileSync(dbPath, dbString)
+  return filteredDB
 }
 
 function schema(body){
   const post = {id : uuid()}
   if(body.title) post.title = body.title
-  if(body.content) post.content = body.content
+  if(body.content) {
+    post.content = body.content
+  } else {
+    return post.error = {message: 'no content'}
+  }
   if(body.image_url) post.image_url = body.image_url
+
   if(body.edited) {
     post.edited = timestamp('HH:mm:ss:MM/DD/YYYY')
   } else {
     post.created = timestamp('HH:mm:ss:MM/DD/YYYY')
   }
-  console.log(post)
+  //error handling here!
   return post
 }
 
-module.exports = {getAll, getOne, create, update}
+module.exports = {getAll, getOne, create, update, destroy}

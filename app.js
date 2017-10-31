@@ -104,11 +104,7 @@ function updatePost(id, data){
 
 function createPost(data){
   axios.post(SERVER, data)
-    .then(res => {
-      console.log(res)
-      console.log('made it this far')
-      // getAll()
-    })
+    .then(res => console.log('######################',res))
     .catch(err => console.log(err))
 }
 

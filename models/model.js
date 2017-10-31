@@ -19,6 +19,7 @@ function getOne(id){
 
 function create(body){
   const data = schema(body)
+  console.log(data)
   if(data.errors) return data.errors
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
@@ -53,6 +54,7 @@ function destroy(id){
 }
 
 function schema(body){
+  let post = {id: uuid()}
   if(body.title) post.title = body.title
   if(body.content) {
     post.content = body.content

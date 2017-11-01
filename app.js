@@ -10,6 +10,7 @@ function getAll(){
 
 function showAll(data){
   let container = document.querySelector('.container')
+  console.log(data)
   container.innerHTML = ''
   for(let i = 0; i < data.length; i++){
     container.innerHTML += `<h3>${data[i].title}</h3>
@@ -104,7 +105,7 @@ function updatePost(id, data){
 
 function createPost(data){
   axios.post(SERVER, data)
-    .then(res => console.log('######################',res))
+    .then(res => console.log(res))
     .catch(err => console.log(err))
 }
 

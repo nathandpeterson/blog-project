@@ -19,7 +19,6 @@ function getOne(id){
 
 function create(body){
   const data = schema(body)
-  console.log(data)
   if(data.errors) return data.errors
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
@@ -30,7 +29,6 @@ function create(body){
 }
 
 function update(id, body){
-  //error handling here
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
   const reqPost = dbJSON[0].posts.find(post => post['id'] == id)
@@ -46,7 +44,6 @@ function destroy(id){
   const db = fs.readFileSync(dbPath, 'utf-8')
   let dbJSON = JSON.parse(db)
   const filteredDB = dbJSON[0].posts.filter(post => post['id'] != id)
-  //Error handling here
   const dbWrapper = [{"posts": filteredDB}]
   let dbString = JSON.stringify(dbWrapper)
   fs.writeFileSync(dbPath, dbString)
@@ -63,7 +60,6 @@ function schema(body){
   }
   if(body.image_url) post.image_url = body.image_url
   post.created = timestamp('HH:mm:ss:MM/DD/YYYY')
-  //error handling here!
   return post
 }
 
